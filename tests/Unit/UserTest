@@ -1,0 +1,31 @@
+<?php
+ 
+namespace Tests\Unit;
+
+use DTApi\Repository\UserRepository;
+use PHPUnit\Framework\TestCase;
+ 
+class UserTest extends TestCase
+{
+    public function test_user_created_or_updated(UserRepository $userRepository): void
+    {
+        $userRepository->createOrUpdate(
+            null,
+            [
+                'role' => User::CUSTOMER_ROLE_ID,
+                'name' => 'Test Customer',
+                'email' => $email = 'test@customer.com',
+                'password' => '12345678',
+                // ... other required fields goes here
+            ],
+        );
+
+        $this->assertCount(
+            1,
+            User::query()
+                ->whereUserType(User::CUSTOMER_ROLE_ID)
+                ->whereEmail($email)
+                ->get()
+        );
+    }
+}
